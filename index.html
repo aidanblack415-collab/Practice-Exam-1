@@ -1,0 +1,327 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>USCP Comprehensive Review Quiz (40 Questions)</title>
+  <style>
+    :root{
+      --bg:#0b1020; --card:#121a33; --muted:#9fb0d0; --text:#e8eeff;
+      --accent:#6aa6ff; --good:#3ddc97; --bad:#ff6b6b; --warn:#ffd166;
+      --border:rgba(255,255,255,.12);
+    }
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      background:radial-gradient(1200px 800px at 20% 0%, #17214a 0%, var(--bg) 55%);
+      color:var(--text);line-height:1.35}
+    header{padding:22px 16px 10px;max-width:980px;margin:0 auto}
+    h1{font-size:1.25rem;margin:0 0 6px 0;letter-spacing:.2px}
+    .sub{color:var(--muted);font-size:.95rem;margin:0}
+    .wrap{max-width:980px;margin:0 auto;padding:10px 16px 28px}
+    .card{background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      border:1px solid var(--border);border-radius:14px;padding:14px;margin:12px 0;
+      box-shadow:0 12px 40px rgba(0,0,0,.25)}
+    .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between}
+    .pill{display:inline-flex;align-items:center;gap:8px;padding:8px 10px;border-radius:999px;
+      border:1px solid var(--border);background:rgba(0,0,0,.15);color:var(--muted);font-size:.9rem}
+    .btn{appearance:none;border:1px solid var(--border);background:rgba(0,0,0,.18);color:var(--text);
+      padding:10px 12px;border-radius:12px;cursor:pointer;font-weight:600;
+      transition:transform .04s ease, background .12s ease, border-color .12s ease;user-select:none}
+    .btn:hover{background:rgba(106,166,255,.12);border-color:rgba(106,166,255,.35)}
+    .btn:active{transform:translateY(1px)}
+    .btn.primary{background:rgba(106,166,255,.18);border-color:rgba(106,166,255,.42)}
+    .btn.danger{background:rgba(255,107,107,.12);border-color:rgba(255,107,107,.35)}
+    .qhead{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:8px}
+    .qnum{color:var(--muted);font-weight:700;font-size:.95rem}
+    .qtext{margin:6px 0 8px;font-size:1.05rem}
+    .choices{display:grid;gap:8px}
+    label.choice{display:flex;gap:10px;align-items:flex-start;padding:10px 10px;border-radius:12px;
+      border:1px solid var(--border);background:rgba(0,0,0,.12);cursor:pointer}
+    label.choice:hover{border-color:rgba(106,166,255,.35);background:rgba(106,166,255,.08)}
+    input[type="radio"]{margin-top:2px;transform:scale(1.05);accent-color:var(--accent)}
+    .foot{margin-top:10px;display:none;border-top:1px solid var(--border);padding-top:10px;
+      color:var(--muted);font-size:.95rem}
+    .result{display:none;padding:12px;border-radius:12px;border:1px solid var(--border);
+      background:rgba(0,0,0,.18)}
+    .score{font-size:1.2rem;font-weight:800;margin:0 0 6px 0}
+    .small{margin:0;color:var(--muted)}
+    .mark.good{color:var(--good);font-weight:800}
+    .mark.bad{color:var(--bad);font-weight:800}
+    .k{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:#d7e2ff;
+      background:rgba(255,255,255,.06);border:1px solid var(--border);padding:2px 6px;border-radius:8px}
+    .review{margin-top:12px;display:none}
+    .review .item{padding:10px;border-radius:12px;border:1px solid var(--border);
+      background:rgba(0,0,0,.14);margin:8px 0}
+    .review .item h3{margin:0 0 6px 0;font-size:1rem}
+    .review .item p{margin:4px 0;color:var(--muted)}
+    .warn{color:var(--warn);font-weight:700}
+  </style>
+</head>
+<body>
+  <header>
+    <h1>USCP Comprehensive Review Quiz (40 Questions)</h1>
+    <p class="sub">Topics: Preliminary Investigation (SOP AC 00-34), Lookouts/Show-Ups/Lineups, NCIC/WALES/NLETS workflow, Jurisdiction & Arrest Authority, and Use of Force (4th Amendment, Graham/Garner/Scott, USCP 1020.004, reporting).</p>
+  </header>
+
+  <div class="wrap">
+    <div class="card">
+      <div class="row">
+        <div class="pill">Mode: <span class="k" id="modeLabel">Sequential</span></div>
+        <div class="pill">Answered: <span class="k" id="answered">0</span> / <span class="k" id="total">40</span></div>
+        <div class="pill">Score: <span class="k" id="liveScore">—</span></div>
+      </div>
+      <div class="row" style="margin-top:10px;">
+        <button class="btn" id="toggleModeBtn" title="Toggle between Sequential and Shuffle">Shuffle: Off</button>
+        <button class="btn" id="checkBtn">Check Answer</button>
+        <button class="btn primary" id="nextBtn">Next</button>
+        <button class="btn danger" id="resetBtn">Reset</button>
+        <button class="btn" id="submitBtn">Submit Quiz</button>
+      </div>
+      <p class="sub" style="margin-top:10px;">
+        Tips: Click <span class="k">Check Answer</span> for immediate feedback, or answer everything then hit <span class="k">Submit Quiz</span>.
+      </p>
+    </div>
+
+    <div class="card" id="questionCard"></div>
+
+    <div class="card result" id="resultCard">
+      <p class="score" id="finalScore"></p>
+      <p class="small" id="finalDetail"></p>
+      <p class="small" id="finalNote" style="margin-top:8px;"></p>
+    </div>
+
+    <div class="review" id="review"></div>
+  </div>
+
+<script>
+const RAW_QUESTIONS = [
+  {"q":"During a street encounter, you intentionally step in front of a suspect and grab their arm to stop them from walking away. Under the Fourth Amendment, what best describes what just occurred?","choices":["A seizure, because the government intentionally terminated movement","Not a seizure unless the suspect is handcuffed","A seizure only if you had probable cause to arrest","A seizure only if you used a weapon"],"answer":0,"explain":"A Fourth Amendment seizure occurs when the government terminates movement by means intentionally applied."},
+  {"q":"Which Supreme Court case established that excessive-force claims by law enforcement are evaluated under the Fourth Amendment's \"objective reasonableness\" standard?","choices":["Terry v. Ohio","Graham v. Connor","Tennessee v. Garner","Scott v. Harris"],"answer":1,"explain":"Graham v. Connor is the controlling framework for objective reasonableness in use-of-force claims."},
+  {"q":"You stop a person based on reasonable suspicion of a theft and conduct a brief pat-down for weapons due to safety concerns. Which case most directly supports this type of seizure absent probable cause?","choices":["Terry v. Ohio","Graham v. Connor","Tennessee v. Garner","Forrett v. Richardson"],"answer":0,"explain":"Terry permits brief seizures and limited frisks based on reasonable suspicion when reasonable for officer safety."},
+  {"q":"Under Graham, which set of factors is used to evaluate reasonableness of force at the moment it was applied?","choices":["Severity, Immediacy, Resistance, Fleeing (SIRF)","Opportunity, Means, Intent, Ability (OMIA)","Intent, Motive, Outcome, Harm","Rank, Tenure, Assignment, Experience"],"answer":0,"explain":"Your notes summarize the Graham factors as SIRF: Severity, Immediacy, Resistance, Fleeing."},
+  {"q":"In Tennessee v. Garner, when may an officer use deadly force to stop a fleeing suspect?","choices":["Whenever the suspect flees after any felony arrest is attempted","Only when the officer has probable cause the suspect poses a significant threat of death or serious bodily injury","Whenever a warning is given, regardless of threat level","Only after all alternative tactics have been exhausted"],"answer":1,"explain":"Garner limits deadly force against fleeing suspects to situations involving significant threat of death/SBI (and warn if feasible)."},
+  {"q":"Scott v. Harris is most important in your training because it:","choices":["Requires officers to exhaust every alternative before using deadly force","Prohibits deadly force in vehicle pursuits","Affirms that Graham reasonableness governs use of force, including deadly force, and balances the threat to the public","Eliminates the need to warn a suspect before using deadly force"],"answer":2,"explain":"Scott ties the deadly-force analysis back to Graham's reasonableness and balances the suspect’s rights against danger to others."},
+  {"q":"Which statement best matches Forrett v. Richardson as taught in your notes?","choices":["Officers must always try non-lethal options first","The Fourth Amendment does not require officers to exhaust every alternative before using justifiable deadly force","Deadly force is allowed only when the suspect is facing the officer","Officers must read Miranda before any use of force"],"answer":1,"explain":"Forrett stands for the idea that officers don't have to exhaust every alternative before justified deadly force."},
+  {"q":"Under your USCP policy notes, the two legitimate reasons for using force are to:","choices":["Punish offenders and deter future crimes","Gain control and defend yourself/others","Search for evidence and seize contraband","Maintain public image and prevent complaints"],"answer":1,"explain":"Your notes: (1) gain control of the subject(s) and (2) defend yourself and others."},
+  {"q":"Which phrase best captures the \"objective reasonableness\" perspective from Graham?","choices":["From the perspective of a reasonable officer on scene at the moment, without 20/20 hindsight","From the perspective of the victim after the incident, with full video review","From the officer's personal intent and feelings during the event","From the prosecutor's opinion of the best tactic available"],"answer":0,"explain":"Objective reasonableness is judged from a reasonable officer’s viewpoint at the time, not with hindsight."},
+  {"q":"USCP Policy Directive 1020.004 generally allows employees to use:","choices":["Any force necessary to win the encounter","Only the level of force that reasonably appears necessary to accomplish lawful objectives while protecting life","Force only after a supervisor arrives","Force only when a felony is committed"],"answer":1,"explain":"Policy emphasizes only that level of force that reasonably appears necessary for lawful objectives and protection of life."},
+
+  {"q":"Under your notes, \"lethal force\" means:","choices":["Any force that causes pain","Force reasonably likely to cause death or serious physical injury","Any use of OC spray or baton","Any force that results in handcuffing"],"answer":1,"explain":"Lethal force is force reasonably likely to cause death or serious physical injury."},
+  {"q":"Under the USCP five levels of force, which option is listed first (lowest level)?","choices":["Compliance techniques","Defense tactics","Cooperative controls","Lethal force"],"answer":2,"explain":"Cooperative controls include presence, verbal commands, and restraint applications."},
+  {"q":"A subject goes limp, refuses to stand, and shows indifference to commands. Under your notes, this is best classified as:","choices":["Passive resistance","Active physical resistance","Bodily harm level","Serious physical injury level"],"answer":0,"explain":"Passive resistance includes low-level noncompliance such as going limp and indifference."},
+  {"q":"A subject begins physically struggling, pulling away, and fighting your control holds. Under your notes, this is best classified as:","choices":["Passive resistance","Active physical resistance","Cooperative control","A consensual contact"],"answer":1,"explain":"Active physical resistance includes struggling/fighting and physical defiance."},
+  {"q":"Which of the following is explicitly prohibited by the USCP use-of-force policy you provided?","choices":["Giving a warning when feasible","Warning shots","Using OC on an actively resistant subject","Requesting medical evaluation after force"],"answer":1,"explain":"Your notes: warning shots are prohibited."},
+  {"q":"An officer points their firearm at an aggressive dog but does not fire. Under your notes, what reporting form is required (assuming this is reportable force)?","choices":["CP-315 Use of Force Report","CP-536 Complaint Report","PD-252 Supplementary Report only","No reporting is required if no shots are fired"],"answer":0,"explain":"Drawing/pointing a weapon (including a firearm) at an individual or animal requires a CP-315 per your notes."},
+  {"q":"Which situation requires an immediate verbal report to a supervisor under your notes?","choices":["You give verbal commands and the subject complies","You apply weaponless physical force and the subject alleges injury","You take a written witness statement","You run a WALES name check with negative results"],"answer":1,"explain":"Weaponless physical force resulting in or alleged to result in injury/death requires immediate verbal report."},
+  {"q":"Your policy notes require CP-315 reports to be completed:","choices":["Within 7 days of the incident","Before the end of the officer’s tour of duty","Only if the supervisor requests it","Only when lethal force is used"],"answer":1,"explain":"Reports are completed prior to the end of the officer’s tour of duty and forwarded per procedure."},
+  {"q":"Which of the following is considered \"less-lethal\" in your notes?","choices":["Discharge of a firearm","Empty-hand techniques, OC, and ASP baton","Any force causing a fracture","Any force used during a stop"],"answer":1,"explain":"Your notes state empty-hand techniques, chemical sprays, and ASP baton are less-lethal techniques."},
+  {"q":"Under your deadly-force guidance, when practical an officer should:","choices":["Always wait for a supervisor before acting","Identify as police and warn of imminent deadly force","Only warn after firing","Never warn because it increases risk"],"answer":1,"explain":"Your notes: when practical/feasible, identify and warn before employing lethal force."},
+
+  {"q":"A detainee is sprayed with OC, appears exhausted, and is kept prone for an extended time. Which concept should you be most alert to from your notes?","choices":["Positional asphyxia risk","Bench warrant expiration","Show-up identification rules","NLETS switching station procedure"],"answer":0,"explain":"OC exposure, prone positioning, exhaustion are risk factors for positional asphyxia."},
+  {"q":"If you suspect positional asphyxia, your notes say you should first:","choices":["Continue questioning to document the event","Request an ambulance immediately and ensure hospital transport","Delay medical care until processing is completed","Only notify a supervisor if the subject loses consciousness"],"answer":1,"explain":"Request EMS immediately, ensure hospital transport, and complete required documentation."},
+  {"q":"Qualified immunity analysis in your notes begins by asking whether:","choices":["The suspect committed a felony","The plaintiff’s constitutional rights were violated and whether the law was clearly established","The officer followed department policy perfectly","A supervisor approved the officer’s actions"],"answer":1,"explain":"Your notes: rights violation? clearly established law? and whether there was a seizure are key steps."},
+  {"q":"Which is the best example of objective (not subjective) articulation in a UOF report?","choices":["\"He was suspicious.\"","\"I felt like he might do something.\"","\"I observed him clench his fists and repeatedly glance at my duty weapon.\"","\"He seemed like a bad guy.\""],"answer":2,"explain":"Objective articulation uses observable facts and action verbs (I saw/I heard), not beliefs or labels."},
+  {"q":"In SOP AC 00-34, the purpose of the preliminary investigation is primarily to:","choices":["Gather information through basic fact gathering and procedures to help identify/apprehend suspects","Collect all physical evidence personally before CSS arrives","Wait for CIS on every call before taking action","Avoid documenting witness statements until later"],"answer":0,"explain":"Preliminary investigation gathers info to support identification/apprehension."},
+  {"q":"According to your notes, the responsibility for establishing a crime scene rests with:","choices":["Crime Scene Search Officers (CSS) only","The first sworn member on scene","The Watch Commander","Any civilian witness willing to help"],"answer":1,"explain":"First sworn member on scene establishes and safeguards the scene."},
+  {"q":"A \"flash lookout\" should be broadcast:","choices":["Only after the full investigation is completed","As immediate suspect info is obtained, prioritized, and announced within 10 minutes of arrival per policy","Only if CIS requests it","Only in felony cases and never for misdemeanors"],"answer":1,"explain":"Flash lookout = immediate priority info within 10 minutes per your notes."},
+  {"q":"Which statement about show-up identifications matches your notes?","choices":["Show-ups can be done at any time as long as the suspect is in handcuffs","Show-ups should occur within 2 hours and reasonably proximate to the scene, with victim/witness viewing separately","Officers should coach the witness on what to say","The detainee must be dressed to match the lookout"],"answer":1,"explain":"Within 2 hours and proximate; neutrality; separate witnesses; don’t change appearance."},
+  {"q":"During a show-up, which action is NOT allowed under your notes?","choices":["Keeping the detainee neutral and facing the witness","Preventing the detainee from identifying the witness","Adding or removing clothing to make the detainee match the lookout","Recording spontaneous witness exclamations verbatim"],"answer":2,"explain":"Do not change appearance; clothing cannot be removed/added."},
+  {"q":"If a show-up results in a negative ID and no other reasonable suspicion exists, your notes require that the detainee:","choices":["Be transported for a photo lineup immediately","Remain detained until a supervisor arrives","Be released because reasonable suspicion has dissipated","Be arrested on a bench warrant automatically"],"answer":2,"explain":"Without RS, must release unless another lawful basis exists."},
+  {"q":"Photo lineups in your notes require the detainee’s photograph be grouped with:","choices":["Two other photographs (total 3)","Five other photographs (total 6)","Eight other photographs (total 9)","Ten other photographs (total 11)"],"answer":2,"explain":"Nine total photos (8 fillers + subject)."},
+  {"q":"The police notebook guidance in your notes emphasizes that notes should be:","choices":["Written from memory at end of shift","Contemporaneous, legible, and able to be explained in court","Destroyed after reports are written","Only include opinions"],"answer":1,"explain":"Notes should be contemporaneous and may be used/examined in court."},
+
+  {"q":"WALES is best described in your notes as:","choices":["A national FBI system of 13 hot files","USCP’s home system administered by MPD that is automatically checked nationally by NCIC","A private database used for public checks","A system located in Phoenix that only handles vehicle registrations"],"answer":1,"explain":"WALES is the home system administered by MPD with national checks via NCIC."},
+  {"q":"NCIC is administered by:","choices":["MPD","The U.S. Marshals Service","The FBI","NLETS"],"answer":2,"explain":"NCIC is administered by the FBI."},
+  {"q":"NLETS is described in your notes as:","choices":["A switching/message system that links agencies nationwide for exchanging critical info","A DC-only warrant database","A system used only for credentials","A court-run system for bench warrants"],"answer":0,"explain":"NLETS is a not-for-profit message switching system linking agencies."},
+  {"q":"For a pedestrian stop (not a traffic stop), your notes say you should typically run:","choices":["A permit check only","A name check only","A VIN check only","No checks"],"answer":1,"explain":"For pedestrian stops, run a name check; license status is irrelevant."},
+  {"q":"A WALES/NCIC \"hit\" requires which three steps before arrest/seizure can be made?","choices":["Check, Detain, Transport","Verify, Confirm, Locate","Stop, Frisk, Identify","Search, Seize, Inventory"],"answer":1,"explain":"Your notes: Verify, Confirm, Locate."},
+  {"q":"In the context of a WALES/NCIC hit, \"confirm\" means:","choices":["Asking the witness if they are sure","Contacting the originating agency to confirm validity and extradition before arrest/seizure","Printing the return and placing it in your notebook","Entering the locate message after release"],"answer":1,"explain":"Confirm with originating agency/ORI before arrest; includes extradition."},
+  {"q":"A bench warrant is generally issued for a person who:","choices":["Commits a felony in an officer’s presence","Fails to appear for a required court hearing","Refuses a name check","Is identified in a photo lineup"],"answer":1,"explain":"Bench warrant is for FTA."},
+  {"q":"Under your jurisdiction notes (Directive 1010.002), USCP maintains primary jurisdiction within:","choices":["All of Washington DC","U.S. Capitol Buildings and Grounds, including non-contiguous portions","Only inside the Capitol building","Only the EJZ"],"answer":1,"explain":"Primary jurisdiction = Capitol Buildings and Grounds incl. non-contiguous portions."},
+  {"q":"Under your notes, the Extended Jurisdiction Zone (EJZ) exists primarily so officers can:","choices":["Broaden patrol areas at will","Move between non-contiguous buildings/grounds on assigned security checks","Replace MPD as primary 911 responder","Investigate all felonies citywide"],"answer":1,"explain":"EJZ supports movement between non-contiguous sites; not for broadening patrol."},
+  {"q":"Which statement about concurrent jurisdiction matches your notes?","choices":["USCP has no overlapping authority","Concurrent jurisdiction means overlapping authority shared with other agencies","Concurrent applies only to civil cases","Concurrent means USCP loses arrest authority"],"answer":1,"explain":"Concurrent = overlapping jurisdiction (e.g., with MPD, Supreme Court Police, U.S. Park Police)."},
+  {"q":"Under your arrest authority notes, within primary jurisdiction an officer may arrest with probable cause for:","choices":["Felonies in/out of presence; PC misdemeanors in/out of presence; misdemeanors in presence","Misdemeanors only if witnessed by two officers","Only felonies inside buildings","Only crimes reported by Members of Congress"],"answer":0,"explain":"Full arrest authority in primary jurisdiction per your notes."},
+  {"q":"If you encounter a person who appears deaf/hard of hearing and Miranda is needed, your notes indicate Miranda warnings should be given:","choices":["Immediately using hand gestures only","Only after a qualified interpreter is present to ensure effective communication","Only after a waiver is signed without explanation","Never"],"answer":1,"explain":"Your notes: Miranda warnings will not be given until a qualified interpreter is present."}
+];
+
+let state = {
+  order: [...Array(RAW_QUESTIONS.length).keys()],
+  idx: 0,
+  answered: Array(RAW_QUESTIONS.length).fill(null),
+  checked: Array(RAW_QUESTIONS.length).fill(false),
+  shuffle: false
+};
+
+const el = (id) => document.getElementById(id);
+
+function applyOrder(){
+  if(state.shuffle){
+    let arr = [...Array(RAW_QUESTIONS.length).keys()];
+    for(let i=arr.length-1;i>0;i--){
+      const j=Math.floor(Math.random()*(i+1));
+      [arr[i],arr[j]]=[arr[j],arr[i]];
+    }
+    state.order = arr;
+    state.idx = 0;
+  } else {
+    state.order = [...Array(RAW_QUESTIONS.length).keys()];
+    state.idx = 0;
+  }
+}
+
+function currentQ(){
+  const realIndex = state.order[state.idx];
+  return { realIndex, data: RAW_QUESTIONS[realIndex] };
+}
+
+function escapeHtml(str){
+  return String(str)
+    .replaceAll('&','&amp;')
+    .replaceAll('<','&lt;')
+    .replaceAll('>','&gt;')
+    .replaceAll('"','&quot;')
+    .replaceAll("'","&#039;");
+}
+
+function computeScore(){
+  let correct=0, incorrect=0, unattempted=0;
+  for(let i=0;i<RAW_QUESTIONS.length;i++){
+    const a = state.answered[i];
+    if(a===null){ unattempted++; continue; }
+    if(a===RAW_QUESTIONS[i].answer) correct++;
+    else incorrect++;
+  }
+  return {correct, incorrect, unattempted};
+}
+
+function render(){
+  el('total').textContent = RAW_QUESTIONS.length;
+  const ansCount = state.answered.filter(v=>v!==null).length;
+  el('answered').textContent = ansCount;
+
+  const checkedCount = state.checked.filter(v=>v).length;
+  el('liveScore').textContent = checkedCount>0 ? `${computeScore().correct}/${RAW_QUESTIONS.length}` : '—';
+
+  el('modeLabel').textContent = state.shuffle ? 'Shuffled' : 'Sequential';
+  el('toggleModeBtn').textContent = state.shuffle ? 'Shuffle: On' : 'Shuffle: Off';
+
+  const {realIndex, data} = currentQ();
+  const saved = state.answered[realIndex];
+
+  const choicesHtml = data.choices.map((c,i)=>{
+    const id = `q${realIndex}_c${i}`;
+    const checked = (saved===i) ? 'checked' : '';
+    return `
+      <label class="choice" for="${id}">
+        <input type="radio" name="q${realIndex}" id="${id}" value="${i}" ${checked}>
+        <div>${escapeHtml(c)}</div>
+      </label>
+    `;
+  }).join('');
+
+  const checkedFlag = state.checked[realIndex];
+  let feedbackHtml = '';
+  if(checkedFlag){
+    const userPick = state.answered[realIndex];
+    const correct = data.answer;
+    const isCorrect = (userPick===correct);
+    feedbackHtml = `
+      <div class="foot" style="display:block;">
+        <div>
+          Result: <span class="mark ${isCorrect?'good':'bad'}">${isCorrect?'Correct':'Incorrect'}</span>
+          &nbsp;|&nbsp; Correct answer: <span class="k">${escapeHtml(data.choices[correct])}</span>
+        </div>
+        <div style="margin-top:6px;">Why: ${escapeHtml(data.explain||'')}</div>
+      </div>
+    `;
+  } else {
+    feedbackHtml = `<div class="foot"></div>`;
+  }
+
+  el('questionCard').innerHTML = `
+    <div class="qhead">
+      <div class="qnum">Question ${state.idx+1} of ${RAW_QUESTIONS.length}</div>
+      <div class="pill">ID: <span class="k">${realIndex+1}</span></div>
+    </div>
+    <div class="qtext">${escapeHtml(data.q)}</div>
+    <div class="choices">${choicesHtml}</div>
+    ${feedbackHtml}
+  `;
+
+  el('questionCard').querySelectorAll('input[type="radio"]').forEach(r=>{
+    r.addEventListener('change',(e)=>{ state.answered[realIndex]=parseInt(e.target.value,10); });
+  });
+
+  el('nextBtn').disabled = (state.idx >= RAW_QUESTIONS.length-1);
+}
+
+function showResults(){
+  const s = computeScore();
+  el('resultCard').style.display='block';
+  el('finalScore').textContent = `Final Score: ${s.correct} / ${RAW_QUESTIONS.length}`;
+  el('finalDetail').textContent = `Incorrect: ${s.incorrect} • Unanswered: ${s.unattempted}`;
+  el('finalNote').textContent = s.unattempted>0 ? 'Note: You left one or more questions unanswered.' :
+    'Review below highlights missed items with the correct answers and rationale.';
+
+  const review = el('review');
+  review.innerHTML='';
+  for(let i=0;i<RAW_QUESTIONS.length;i++){
+    const q=RAW_QUESTIONS[i];
+    const user=state.answered[i];
+    const isCorrect=(user===q.answer);
+    const userText=(user===null)?'<span class="warn">Unanswered</span>':escapeHtml(q.choices[user]);
+    const correctText=escapeHtml(q.choices[q.answer]);
+
+    const item=document.createElement('div');
+    item.className='item';
+    item.innerHTML=`
+      <h3>${i+1}) ${escapeHtml(q.q)}</h3>
+      <p>Your answer: ${userText} ${isCorrect?'<span class="mark good">(Correct)</span>':'<span class="mark bad">(Incorrect)</span>'}</p>
+      <p>Correct: <span class="k">${correctText}</span></p>
+      <p>Why: ${escapeHtml(q.explain||'')}</p>
+    `;
+    review.appendChild(item);
+  }
+  review.style.display='block';
+  window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'});
+}
+
+function resetAll(){
+  state.answered = Array(RAW_QUESTIONS.length).fill(null);
+  state.checked = Array(RAW_QUESTIONS.length).fill(false);
+  state.idx = 0;
+  el('resultCard').style.display='none';
+  el('review').style.display='none';
+  render();
+}
+
+document.getElementById('toggleModeBtn').addEventListener('click', ()=>{
+  state.shuffle = !state.shuffle;
+  applyOrder();
+  state.checked = Array(RAW_QUESTIONS.length).fill(false);
+  el('resultCard').style.display='none';
+  el('review').style.display='none';
+  render();
+});
+document.getElementById('nextBtn').addEventListener('click', ()=>{
+  if(state.idx<RAW_QUESTIONS.length-1){ state.idx++; render(); }
+});
+document.getElementById('checkBtn').addEventListener('click', ()=>{
+  const {realIndex} = currentQ();
+  if(state.answered[realIndex]===null){ alert('Pick an answer first.'); return; }
+  state.checked[realIndex]=true;
+  render();
+});
+document.getElementById('resetBtn').addEventListener('click', ()=>{
+  if(confirm('Reset all answers and start over?')) resetAll();
+});
+document.getElementById('submitBtn').addEventListener('click', ()=>{
+  state.checked = state.checked.map((_,i)=> state.answered[i]!==null);
+  render();
+  showResults();
+});
+
+applyOrder();
+render();
+</script>
+</body>
+</html>
